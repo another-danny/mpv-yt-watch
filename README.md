@@ -8,6 +8,11 @@ A combination of both mpv and yt-dlp to allow users to watch youtube videos via 
 
 ### Potential upgrades ###
 - Confirmation on search variable before proceeding. Will likely require while, while not Y, return back to the initial search 
+- Internal script flags/tacs to speed past the interactivity and give the power user immediate control/less handholding
+- Implementation of bash maps: https://bashcommands.com/bash-map to simplify if statements
+- Channel selection (needs to be a feature within yt-dlp), will review later
+- URL mode toggle/option
 
 ### Known Issues ###
 - Certain symbols specifically, [] $ cause the result variable to not work correctly, breaking communication with mpv and erroring out overall
+- If you use this script excessively on the same video (during testing specifically), your ip does get logged as a bot for an hour or two. Sign in apparently fixes this, haven't tried this but not particularly a hassle
