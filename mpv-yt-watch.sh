@@ -32,11 +32,11 @@ case $formatExt in
 	;;
 esac
 
-formatResolution=$(echo "${searchFormat}" | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
+formattedSearch=$(echo "${searchFormat}" | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
 
-formattedLine=$(echo "$formatResolution" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
-read -rp "${formatResolution[@]}"$'\n'"Choose video resolution format (Default: best) [${formattedLine}]: " -- formatRes
-formatRes=${formatRes:-$(echo "${formatResolution[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p//g')}
+formattedLine=$(echo "$formattedSearch" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
+read -rp "${formattedSearch[@]}"$'\n'"Choose video resolution format (Default: best) [${formattedLine}]: " -- formatRes
+formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p//g')}
 echo $formatRes
 
 case $formatRes in
