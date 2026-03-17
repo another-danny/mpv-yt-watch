@@ -16,13 +16,17 @@
 # - A very special thanks to: another-danny for improving upon the script. Video res formats are now much better and streamlined. He also added some good bash code hygiene practices I was unfamiliar with.
 
 read -rp "Input search string [ Song | Music Artist | Youtuber ]: " -- search
-echo "You are searching for: $search"
-searchFormat=$(yt-dlp ytsearch1:"$search" --list-formats)
+if [[ -z "$search" ]]; then
+  echo "Invalid input! Please try again!"
+  exit 1;
+else
+  echo "You are searching for: $search"
+  searchFormat=$(yt-dlp ytsearch1:"$search" --list-formats)
 
-formatExt=$(echo "${searchFormat}" | grep -e 'webm\|mp4' | grep -v 'audio only' | awk '{print $2;}' | sort -u | nl)
-echo "$formatExt"
-read -rp "Choose extension format (Default: empty) [1-2]: " -- formatExt
-case $formatExt in
+  formatExt=$(echo "${searchFormat}" | grep -e 'webm\|mp4' | grep -v 'audio only' | awk '{print $2;}' | sort -u | nl)
+  echo "$formatExt"
+  read -rp "Choose extension format (Default: empty) [1-2]: " -- formatExt
+  case $formatExt in
 	1)
 		ext=[ext=mp4]
 	;;
@@ -31,15 +35,15 @@ case $formatExt in
 	;;
 	*)
 	;;
-esac
+  esac
 
-formattedSearch=$(echo "${searchFormat}" | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
+  formattedSearch=$(echo "${searchFormat}" | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
 
-formattedLine=$(echo "$formattedSearch" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
-read -rp "${formattedSearch[@]}"$'\n'"Choose video resolution format (Default: best) [ ${formattedLine} ]: " -- formatRes
-formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p60//g' | sed -e 's/p//g' )}
+  formattedLine=$(echo "$formattedSearch" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
+  read -rp "${formattedSearch[@]}"$'\n'"Choose video resolution format (Default: best) [ ${formattedLine} ]: " -- formatRes
+  formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p60//g' | sed -e 's/p//g' )}
 
-case $formatRes in
+  case $formatRes in
 	144)	
 	;;
 	240)
@@ -58,15 +62,15 @@ case $formatRes in
 		echo "Invalid option! Please try again"
 		exit 1;
 	;;
-esac
+  esac
 
-videoUrl=$(yt-dlp --get-id ytsearch1:"$search")
-videoUrl="https://youtube.com/watch?v=$videoUrl"
+  videoUrl=$(yt-dlp --get-id ytsearch1:"$search")
+  videoUrl="https://youtube.com/watch?v=$videoUrl"
 
-read -rp "Would you like to save a copy of this video: $search? [y/N]: " -- dlConfirm
-dlConfirm=${dlConfirm:-N}
+  read -rp "Would you like to save a copy of this video: $search? [y/N]: " -- dlConfirm
+  dlConfirm=${dlConfirm:-N}
 
-case $dlConfirm in
+  case $dlConfirm in
 	y|Y)
 		echo "Downloading file" 
 		cache=$(yt-dlp ytsearch1:"$search" | grep "Destination" | tail -n 1 | sed 's/\[download] Destination: //g' | sed 's/.\{23\}$//')
@@ -83,4 +87,5 @@ case $dlConfirm in
 	*)
 		echo "Invalid input! Please try again."
 	;;
-esac
+  esac
+fi
