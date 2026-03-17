@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### mpv-yt-watch.sh ###
+### mpv_yt_watch_v4.sh ###
 # - Added search string functionality, now you no longer need a browser at all really
 # - Need for url validation no longer required
 # - Removed unnecessary usage of caching to stdoutput and stderr
@@ -14,12 +14,13 @@
 # - If statements replaced with cases. Actually much better in this use case and fixed a lot of headaches.
 # - I have tested numerous videos over numerous languages, video resolutions and extensions and I can't seem to break it anymore. If you are an experienced tester, please try and let me know.
 
-read -rp "Input search string [ Song | Music Artist | Youtuber ]: " search
+read -rp "Input search string [ Song | Music Artist | Youtuber ]: " -- search
 echo "You are searching for: $search"
+searchFormat=$(yt-dlp ytsearch1:"$search" --list-formats)
 
-formatExt=$(yt-dlp ytsearch1:"$search" --list-formats | grep -e 'webm\|mp4' | grep -v 'audio only' | awk '{print $2;}' | sort -u | nl)
+formatExt=$(echo "${searchFormat}" | grep -e 'webm\|mp4' | grep -v 'audio only' | awk '{print $2;}' | sort -u | nl)
 echo "$formatExt"
-read -rp "Choose extension format (Default: empty) [1-2]: " formatExt
+read -rp "Choose extension format (Default: empty) [1-2]: " -- formatExt
 case $formatExt in
 	1)
 		ext=[ext=mp4]
@@ -31,9 +32,11 @@ case $formatExt in
 	;;
 esac
 
-formatRes=$(yt-dlp ytsearch1:"$search" --list-formats | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
-echo "$formatRes"
-read -rp "Choose video resolution format (Default: best) [144|240|480|720|1080|1440|2160]: " formatRes
+formattedSearch=$(echo "${searchFormat}" | grep -e '144p\|240p\|480p\|720p\|1080p\|1440p\|2160p' | awk '{print $14;}' | tr -s '\n' | tr -d ',' | uniq)
+
+formattedLine=$(echo "$formattedSearch" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
+read -rp "${formattedSearch[@]}"$'\n'"Choose video resolution format (Default: best) [ ${formattedLine} ]: " -- formatRes
+formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p60//g' | sed -e 's/p//g' )}
 
 case $formatRes in
 	144)	
@@ -59,7 +62,8 @@ esac
 videoUrl=$(yt-dlp --get-id ytsearch1:"$search")
 videoUrl="https://youtube.com/watch?v=$videoUrl"
 
-read -rp "Would you like to save a copy of this video: $search? [y/N]: " dlConfirm
+read -rp "Would you like to save a copy of this video: $search? [y/N]: " -- dlConfirm
+dlConfirm=${dlConfirm:-N}
 
 case $dlConfirm in
 	y|Y)
