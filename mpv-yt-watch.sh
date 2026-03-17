@@ -13,6 +13,7 @@
 # - Inclusion of 144p video res, figured if I'm trying to compete, I might as well meet the youtube standard. 144p all the way to 4K. LETS GO BAYBEEEEEE!
 # - If statements replaced with cases. Actually much better in this use case and fixed a lot of headaches.
 # - I have tested numerous videos over numerous languages, video resolutions and extensions and I can't seem to break it anymore. If you are an experienced tester, please try and let me know.
+# - A very special thanks to: another-danny for improving upon the script. Video res formats are now much better and streamlined. He also added some good bash code hygiene practices I was unfamiliar with.
 
 read -rp "Input search string [ Song | Music Artist | Youtuber ]: " -- search
 echo "You are searching for: $search"
