@@ -41,7 +41,7 @@ else
 
   formattedLine=$(echo "$formattedSearch" | sed -e :a -e '$!N; s/\n/ | /; ta' | sed -e 's/p//g' )
   read -rp "${formattedSearch[@]}"$'\n'"Choose video resolution format (Default: best) [${formattedLine}]: " -- formatRes
-  formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p60//g' | sed -e 's/p//g' )}
+  formatRes=${formatRes:-$(echo "${formattedSearch[@]}" | sort -t p -n -k 1 | tail -1 | sed -e 's/p60//g' | sed -e 's/p//g' | sed -e 's/60//g')}
 
   case $formatRes in
 	144)	
