@@ -24,6 +24,7 @@ A combination of both mpv and yt-dlp to allow users to watch youtube videos via 
 - Video download now optional, not required
 
 ## Special Thanks ##
+mpv & yt-dlp - both have no idea I exist but this project is nothing without them
 another-danny - Fellow bash enthusiast aha
   
 ## Known Issues ##
